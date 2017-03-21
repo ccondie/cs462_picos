@@ -10,6 +10,7 @@ ruleset hello_world
   }
   
   global {
+  clear_name = { "_0": { "name": { "first": "GlaDOS", "last": "" } } }
   hello = function(obj) {
   msg = "Hello " + obj;
   msg
@@ -19,7 +20,8 @@ ruleset hello_world
 "queries": [ { "name": "hello", "args": [ "obj" ] }, { "name": "__testing" } ], 
 "events": [ 
       { "domain": "echo", "type": "hello", "attrs":["name"] },
-{ "domain": "hello", "type": "name", "attrs": [ "name" ] } ]}
+      { "domain": "hello", "type": "name", "attrs": [ "name" ] },
+      { "domain": "hello", "type" : "clear"}]}
   }
 
   rule hello_world{
@@ -41,6 +43,13 @@ ruleset hello_world
       name = name
     always{
       ent:name := name
+    }
+  }
+
+  rule clean_names{
+    select when hello clear
+    always{
+      ent:name := clear_name
     }
   }
 }
