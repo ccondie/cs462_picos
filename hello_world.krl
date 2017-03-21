@@ -10,15 +10,19 @@ A first ruleset for the Quickstart
   }
   
   global {
-    hello = function(obj) {
-      msg = "Hello " + obj;
-      msg
-    }
+    	hello = function(obj) {
+      		msg = "Hello " + obj;
+      		msg
+    	}
 	__testing = { 
 		"queries": [ { "name": "hello", "args": [ "obj" ] }, { "name": "__testing" } ], 
-		"events": [ { "domain": "echo", "type": "hello", "attrs":["name"] } ]
+		"events": [ { "domain": "echo", "type": "hello", "attrs":["name"] },
+			    { "domain": "hello", "type": "name", "attrs": [ "name" ] } ]
 	}
   }
+
+
+
   
   rule hello_world {
     select when echo hello
@@ -28,5 +32,22 @@ A first ruleset for the Quickstart
     send_directive("say") with
       something = "Hello " + name
   }
+
+
+
+rule store_name {
+  select when hello name
+  pre{
+    name = event:attr("name").klog("our passed in name: ")
+  }
+  send_directive("store_name") with
+    name = name
+  always{
+    ent:name := name
+  }
+}
+
+
+
   
 }
